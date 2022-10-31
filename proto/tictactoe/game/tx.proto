@@ -8,6 +8,7 @@ option go_package = "tictactoe/x/game/types";
 // Msg defines the Msg service.
 service Msg {
       rpc CreateGame(MsgCreateGame) returns (MsgCreateGameResponse);
+  rpc PlayGame(MsgPlayGame) returns (MsgPlayGameResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -17,6 +18,16 @@ message MsgCreateGame {
 }
 
 message MsgCreateGameResponse {
+}
+
+message MsgPlayGame {
+  string creator = 1;
+  string gameId = 2;
+  string row = 3;
+  string col = 4;
+}
+
+message MsgPlayGameResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

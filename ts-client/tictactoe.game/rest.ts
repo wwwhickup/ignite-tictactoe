@@ -23,6 +23,8 @@ export interface GameGame {
 
 export type GameMsgCreateGameResponse = object;
 
+export type GameMsgPlayGameResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */

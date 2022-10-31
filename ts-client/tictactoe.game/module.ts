@@ -8,9 +8,10 @@ import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
 import { MsgCreateGame } from "./types/tictactoe/game/tx";
+import { MsgPlayGame } from "./types/tictactoe/game/tx";
 
 
-export { MsgCreateGame };
+export { MsgCreateGame, MsgPlayGame };
 
 type sendMsgCreateGameParams = {
   value: MsgCreateGame,
@@ -18,9 +19,19 @@ type sendMsgCreateGameParams = {
   memo?: string
 };
 
+type sendMsgPlayGameParams = {
+  value: MsgPlayGame,
+  fee?: StdFee,
+  memo?: string
+};
+
 
 type msgCreateGameParams = {
   value: MsgCreateGame,
+};
+
+type msgPlayGameParams = {
+  value: MsgPlayGame,
 };
 
 
@@ -55,12 +66,34 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgPlayGame({ value, fee, memo }: sendMsgPlayGameParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgPlayGame: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgPlayGame({ value: MsgPlayGame.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgPlayGame: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		
 		msgCreateGame({ value }: msgCreateGameParams): EncodeObject {
 			try {
 				return { typeUrl: "/tictactoe.game.MsgCreateGame", value: MsgCreateGame.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgCreateGame: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgPlayGame({ value }: msgPlayGameParams): EncodeObject {
+			try {
+				return { typeUrl: "/tictactoe.game.MsgPlayGame", value: MsgPlayGame.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgPlayGame: Could not create message: ' + e.message)
 			}
 		},
 		
