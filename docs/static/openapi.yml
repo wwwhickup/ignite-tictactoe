@@ -75326,6 +75326,8 @@ definitions:
         format: int32
       completed:
         type: boolean
+  tictactoe.game.MsgCreateGameResponse:
+    type: object
   tictactoe.game.Params:
     type: object
     description: Params defines the parameters for the module.

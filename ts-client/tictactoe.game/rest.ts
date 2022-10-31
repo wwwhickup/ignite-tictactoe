@@ -21,6 +21,8 @@ export interface GameGame {
   completed?: boolean;
 }
 
+export type GameMsgCreateGameResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
