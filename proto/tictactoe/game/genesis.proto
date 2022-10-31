@@ -3,6 +3,7 @@ package tictactoe.game;
 
 import "gogoproto/gogo.proto";
 import "tictactoe/game/params.proto";
+import "tictactoe/game/game.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "tictactoe/x/game/types";
@@ -10,5 +11,7 @@ option go_package = "tictactoe/x/game/types";
 // GenesisState defines the game module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  repeated Game gameList = 2 [(gogoproto.nullable) = false];
+  uint64 gameCount = 3;
   // this line is used by starport scaffolding # genesis/proto/state
 }

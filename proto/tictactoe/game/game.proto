@@ -1,0 +1,14 @@
+syntax = "proto3";
+package tictactoe.game;
+
+option go_package = "tictactoe/x/game/types";
+
+message Game {
+  uint64 id = 1;
+  string creator = 2; 
+  string inviter = 3; 
+  repeated int32 status = 4; 
+  int32 winner = 5; 
+  bool completed = 6; 
+  
+}

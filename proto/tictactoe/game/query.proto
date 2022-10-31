@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "tictactoe/game/params.proto";
+import "tictactoe/game/game.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "tictactoe/x/game/types";
@@ -15,7 +16,17 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/tictactoe/game/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a Game by id.
+	rpc Game(QueryGetGameRequest) returns (QueryGetGameResponse) {
+		option (google.api.http).get = "/tictactoe/game/game/{id}";
+	}
+
+	// Queries a list of Game items.
+	rpc GameAll(QueryAllGameRequest) returns (QueryAllGameResponse) {
+		option (google.api.http).get = "/tictactoe/game/game";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +36,23 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetGameRequest {
+	uint64 id = 1;
+}
+
+message QueryGetGameResponse {
+	Game Game = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllGameRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllGameResponse {
+	repeated Game Game = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

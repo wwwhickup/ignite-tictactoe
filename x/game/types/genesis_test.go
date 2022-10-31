@@ -19,12 +19,47 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid:    true,
 		},
 		{
-			desc:     "valid genesis state",
+			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
+				GameList: []types.Game{
+					{
+						Id: 0,
+					},
+					{
+						Id: 1,
+					},
+				},
+				GameCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc: "duplicated game",
+			genState: &types.GenesisState{
+				GameList: []types.Game{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid game count",
+			genState: &types.GenesisState{
+				GameList: []types.Game{
+					{
+						Id: 1,
+					},
+				},
+				GameCount: 0,
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {
