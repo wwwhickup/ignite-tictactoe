@@ -18,40 +18,58 @@ func totalMoves(status []int32) int32 {
 	return int32(totalMoves)
 }
 
-func cehckWinner(game types.Game) {
+func checkWinner(game types.Game) types.Game {
 	status := game.Status
 	// checking by row
 	for i := 0; i < 3; i++ {
-		sum := status[i] + status[i+1] + status[i+2]
+		sum := status[i*3] + status[i*3+1] + status[i*3+2]
 		if sum == 3 {
 			game.Winner = 1
+			game.Completed = true
+			return game
 		} else if sum == -3 {
 			game.Winner = 2
+			game.Completed = true
+			return game
 		}
 	}
 	// checking by col
 	for i := 0; i < 3; i++ {
-		sum := status[1] + status[i+3] + status[i+6]
+		sum := status[i] + status[i+3] + status[i+6]
 		if sum == 3 {
 			game.Winner = 1
+			game.Completed = true
+			return game
 		} else if sum == -3 {
 			game.Winner = 2
+			game.Completed = true
+			return game
 		}
 	}
 	// checking by diagonal
 	aDiag := status[0] + status[4] + status[8]
 	bDiag := status[2] + status[4] + status[6]
+
 	if aDiag == 3 {
 		game.Winner = 1
+		game.Completed = true
+		return game
 	} else if aDiag == -3 {
 		game.Winner = 2
+		game.Completed = true
+		return game
 	}
 
 	if bDiag == 3 {
 		game.Winner = 1
+		game.Completed = true
+		return game
 	} else if bDiag == -3 {
 		game.Winner = 2
+		game.Completed = true
+		return game
 	}
+	return game
 }
 
 func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*types.MsgPlayGameResponse, error) {
@@ -106,7 +124,11 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 		game.Status[cellIndex] = -1
 	}
 
-	cehckWinner(game)
+	game = checkWinner(game)
+	movesPlayed = totalMoves(game.Status)
+	if movesPlayed == 9 {
+		game.Completed = true
+	}
 	k.SetGame(ctx, game)
 	return &types.MsgPlayGameResponse{}, nil
 }
