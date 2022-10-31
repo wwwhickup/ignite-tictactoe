@@ -104,6 +104,9 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	gamemodule "tictactoe/x/game"
+	gamemodulekeeper "tictactoe/x/game/keeper"
+	gamemoduletypes "tictactoe/x/game/types"
 	tictactoemodule "tictactoe/x/tictactoe"
 	tictactoemodulekeeper "tictactoe/x/tictactoe/keeper"
 	tictactoemoduletypes "tictactoe/x/tictactoe/types"
@@ -166,6 +169,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		tictactoemodule.AppModuleBasic{},
+		gamemodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -240,6 +244,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	TictactoeKeeper tictactoemodulekeeper.Keeper
+
+	GameKeeper gamemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -285,6 +291,7 @@ func New(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
 		tictactoemoduletypes.StoreKey,
+		gamemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -510,6 +517,14 @@ func New(
 	)
 	tictactoeModule := tictactoemodule.NewAppModule(appCodec, app.TictactoeKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.GameKeeper = *gamemodulekeeper.NewKeeper(
+		appCodec,
+		keys[gamemoduletypes.StoreKey],
+		keys[gamemoduletypes.MemStoreKey],
+		app.GetSubspace(gamemoduletypes.ModuleName),
+	)
+	gameModule := gamemodule.NewAppModule(appCodec, app.GameKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Sealing prevents other modules from creating scoped sub-keepers
@@ -556,6 +571,7 @@ func New(
 		transferModule,
 		icaModule,
 		tictactoeModule,
+		gameModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -586,6 +602,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		tictactoemoduletypes.ModuleName,
+		gamemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -611,6 +628,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		tictactoemoduletypes.ModuleName,
+		gamemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -641,6 +659,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		tictactoemoduletypes.ModuleName,
+		gamemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -671,6 +690,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		tictactoeModule,
+		gameModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -870,6 +890,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(tictactoemoduletypes.ModuleName)
+	paramsKeeper.Subspace(gamemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

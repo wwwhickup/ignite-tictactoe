@@ -1,9 +1,11 @@
 // THIS FILE IS GENERATED AUTOMATICALLY. DO NOT MODIFY.
 
+import TictactoeGame from './tictactoe.game'
 import TictactoeTictactoe from './tictactoe.tictactoe'
 
 
 export default { 
+  TictactoeGame: load(TictactoeGame, 'tictactoe.game'),
   TictactoeTictactoe: load(TictactoeTictactoe, 'tictactoe.tictactoe'),
   
 }
