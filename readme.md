@@ -1,6 +1,16 @@
 # tictactoe
 **tictactoe** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
+## Chain create
+```
+ignite scaffold chain tictactoe
+ignite scaffold module game
+ignite scaffold list game creator inviter status:array.int winner:int completed:bool --no-message --module game
+ignite scaffold message createGame inviter --module game
+ignite scaffold message playGame gameId row col --module game
+ignite chain serve -r
+```
+
 ## Get started
 
 ```
