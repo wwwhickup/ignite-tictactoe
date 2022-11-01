@@ -6,10 +6,9 @@
     <div>Winner: {{game.winner}}</div>
     <div>Completed: {{game.completed}}</div>
     <br />
-    <div>Turn: This is your turn</div>
     <div class="tictactoe-board">
-      <button v-for="(cell, index) in game.status" key={{index}} @click="fillCell(game.id, index)" class="cell">
-        {{cell == 0 ? 'null' : cell == 1 ? 'o' : 'x'}}
+      <button v-for="(cell, index) in game.status" key={{index}} :disabled="game.completed" @click="fillCell(game.id, index)" class="cell">
+        {{cell == 0 ? '' : cell == 1 ? 'O' : 'X'}}
       </button>
     </div>
   </div>
@@ -23,7 +22,7 @@ import { Client } from 'tictactoe-client-ts'
 const client = new Client({ 
     apiURL: "http://localhost:1317",
     rpcURL: "http://localhost:26657",
-    prefix: "cosmos"
+    prefix: "cosmos",
   },
 );
 export default {
@@ -31,14 +30,22 @@ export default {
   props: {
    game: Object
   },
-  setup({game}) {
+  setup(props) {
     // store
+    let game = ref(props.game)
     let $s = useStore()
     let address = computed(() => $s.state.common.wallet.selectedAddress)
 
     let showAddress = (address) => {
       const len = address.length
       return address.slice(0, 10) + '......' + address.slice(len - 5, len)
+    }
+    
+    const getGameStatus = () => {
+      setInterval(async() => {
+        const data = await client.TictactoeGame.query.queryGame(props.game.id).then(data => data.data)
+        game.value = data.Game
+      }, 1000)
     }
 
     const fillCell = async (gameId, index) => {
@@ -61,6 +68,10 @@ export default {
         console.log(err)
       }
     }
+
+    onMounted(async () => {
+      getGameStatus()
+    })
 
     return {
       address,
@@ -91,9 +102,12 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 10px;
+    font-size: 34px;
     .cell {
       margin: auto;
-      border: 1px red solid;
+      border: 1px rgb(190, 203, 238) solid;
+      border-radius: 10px;
+      box-shadow: 0 2px 2px 0px grey;
       height: 80px;
       width: 80px;
       display: flex;

@@ -6,6 +6,7 @@ import (
 	"tictactoe/x/game/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func initialStatus() []int32 {
@@ -18,6 +19,9 @@ func (k msgServer) CreateGame(goCtx context.Context, msg *types.MsgCreateGame) (
 
 	// TODO: Handling the message
 	_ = ctx
+	if msg.Creator == msg.Inviter {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Inviter can not be a Creator")
+	}
 	game := types.Game{
 		Creator:   msg.Creator,
 		Inviter:   msg.Inviter,

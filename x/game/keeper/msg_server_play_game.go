@@ -6,6 +6,7 @@ import (
 	"tictactoe/x/game/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func totalMoves(status []int32) int32 {
@@ -80,18 +81,18 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 	gameId, _ := strconv.ParseInt(msg.GameId, 10, 64)
 	game, isExit := k.GetGame(ctx, uint64(gameId))
 	if !isExit {
-		// Error Unknow Request "No Such Game"
-		return &types.MsgPlayGameResponse{}, nil
+		// Error Not Found Game "No Such Game"
+		return nil, sdkerrors.Wrap(sdkerrors.ErrNotFound, "No Such Game")
 	}
 
 	if game.Creator != msg.Creator && game.Inviter != msg.Creator {
 		// Error Unauthorized "Not Playing in this game"
-		return &types.MsgPlayGameResponse{}, nil
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "You are not a player in this game")
 	}
 
 	if game.Completed {
 		// Error unknow Request "Game already finished"
-		return &types.MsgPlayGameResponse{}, nil
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Game already finished")
 	}
 
 	var player1 bool
@@ -106,8 +107,8 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 	}
 
 	if (player1 && !player1ShouldPlay) || (!player1 && player1ShouldPlay) {
-		// Error unknow Requst "Not your turn"
-		return &types.MsgPlayGameResponse{}, nil
+		// Error Invalid Requst "Not your turn"
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Not your turn")
 	}
 
 	rowNum, _ := strconv.ParseInt(string(msg.Row), 10, 64)
@@ -115,7 +116,7 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 	cellIndex := rowNum*3 + colNum
 	if game.Status[cellIndex] != 0 {
 		// Error Unknow Request Cell is already taken
-		return &types.MsgPlayGameResponse{}, nil
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Cell is already taken")
 	}
 
 	if player1 {
