@@ -25,6 +25,9 @@ export default {
   setup() {
     // store
     let $s = useStore()
+    console.log("$S.getters: ", $s.getters)
+    let params = $s.getters['tictactoe.game/getParams']()
+    console.log("params: ", params)
 
     // computed
     let address = computed(() => $s.getters['common/wallet/address'])

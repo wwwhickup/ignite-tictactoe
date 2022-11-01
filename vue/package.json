@@ -1,6 +1,7 @@
 {
   "author": "Tendermint, Inc \u003chello@tendermint.com\u003e",
   "dependencies": {
+    "@cosmjs/encoding": "^0.29.3",
     "@cosmjs/launchpad": "0.27.0",
     "@cosmjs/proto-signing": "0.27.0",
     "@cosmjs/stargate": "0.27.0",
@@ -8,6 +9,8 @@
     "@starport/vuex": "^0.3.10",
     "buffer": "^6.0.3",
     "core-js": "^3.18.2",
+    "i": "^0.3.7",
+    "npm": "^8.19.2",
     "tictactoe-client-ts": "file:../ts-client",
     "vue": "^3.2.6",
     "vue-router": "^4.0.3",
