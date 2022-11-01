@@ -78,6 +78,7 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 
 	// TODO: Handling the message
 	_ = ctx
+
 	gameId, _ := strconv.ParseInt(msg.GameId, 10, 64)
 	game, isExit := k.GetGame(ctx, uint64(gameId))
 	if !isExit {

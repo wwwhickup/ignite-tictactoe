@@ -1,10 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Portfolio from '../views/Portfolio.vue'
+import Dashboard from '../views/Dashboard.vue'
+import GameBoard from '../views/GameBoard.vue'
 
 const routerHistory = createWebHistory()
 const routes = [
-  { path: '/', component: Portfolio },
+  { path: '/', component: Dashboard },
+  { path: '/game/:id', component: GameBoard },
 ]
 
 const router = createRouter({

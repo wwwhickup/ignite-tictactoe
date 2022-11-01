@@ -1,26 +1,18 @@
 <template>
   <div class="container">
-    <div class="row row-sm-revers">
-      <div class="col-md-6">
-        <SpAssets />
-        <SpTokenTransferList />
-      </div>
-      <div class="col-md-5 col-lg-4 col-md-offset-1 col-lg-offset-2">
-        <SpTokenTransfer />
-      </div>
-    </div>
+    <GameList />
   </div>
 </template>
 
 <script>
-import { SpAssets, SpTokenTransfer, SpTokenTransferList } from '@starport/vue'
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import GameList from './components/GameList.vue'
 
 export default {
-  name: 'Portfolio',
+  name: 'Dashboard',
 
-  components: { SpTokenTransfer, SpAssets, SpTokenTransferList },
+  components: { GameList },
 
   setup() {
     // store

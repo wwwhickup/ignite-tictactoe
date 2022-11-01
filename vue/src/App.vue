@@ -10,7 +10,7 @@
       </div>
       <div class="container">
         <GameCreate />
-        <GameList />
+        <router-view></router-view>
       </div>
     </SpTheme>
   </div>
@@ -23,19 +23,16 @@ import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-import GameList from './views/components/GameList.vue'
 import GameCreate from './views/components/GameCreate.vue'
 
 export default {
-  components: { SpTheme, SpNavbar, GameList, GameCreate, SpAcc },
+  components: { SpTheme, SpNavbar, GameCreate, SpAcc },
 
   setup() {
     // store
     let $s = useStore()
     let router = useRouter()
-    let navbarLinks = [
-      { name: 'Tictactoe', url: '/' },
-    ]
+
     onBeforeMount(async () => {
       await $s.dispatch('common/env/init')
       await $s.dispatch('cosmos.staking.v1beta1/QueryParams')
@@ -43,7 +40,6 @@ export default {
     })
 
     return {
-      navbarLinks,
       router,
     }
   }
