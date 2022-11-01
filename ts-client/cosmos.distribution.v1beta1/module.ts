@@ -8,21 +8,15 @@ import { IgniteClient } from "../client"
 import { MissingWalletError } from "../helpers"
 import { Api } from "./rest";
 import { MsgWithdrawValidatorCommission } from "./types/cosmos/distribution/v1beta1/tx";
-import { MsgSetWithdrawAddress } from "./types/cosmos/distribution/v1beta1/tx";
 import { MsgFundCommunityPool } from "./types/cosmos/distribution/v1beta1/tx";
 import { MsgWithdrawDelegatorReward } from "./types/cosmos/distribution/v1beta1/tx";
+import { MsgSetWithdrawAddress } from "./types/cosmos/distribution/v1beta1/tx";
 
 
-export { MsgWithdrawValidatorCommission, MsgSetWithdrawAddress, MsgFundCommunityPool, MsgWithdrawDelegatorReward };
+export { MsgWithdrawValidatorCommission, MsgFundCommunityPool, MsgWithdrawDelegatorReward, MsgSetWithdrawAddress };
 
 type sendMsgWithdrawValidatorCommissionParams = {
   value: MsgWithdrawValidatorCommission,
-  fee?: StdFee,
-  memo?: string
-};
-
-type sendMsgSetWithdrawAddressParams = {
-  value: MsgSetWithdrawAddress,
   fee?: StdFee,
   memo?: string
 };
@@ -39,13 +33,15 @@ type sendMsgWithdrawDelegatorRewardParams = {
   memo?: string
 };
 
+type sendMsgSetWithdrawAddressParams = {
+  value: MsgSetWithdrawAddress,
+  fee?: StdFee,
+  memo?: string
+};
+
 
 type msgWithdrawValidatorCommissionParams = {
   value: MsgWithdrawValidatorCommission,
-};
-
-type msgSetWithdrawAddressParams = {
-  value: MsgSetWithdrawAddress,
 };
 
 type msgFundCommunityPoolParams = {
@@ -54,6 +50,10 @@ type msgFundCommunityPoolParams = {
 
 type msgWithdrawDelegatorRewardParams = {
   value: MsgWithdrawDelegatorReward,
+};
+
+type msgSetWithdrawAddressParams = {
+  value: MsgSetWithdrawAddress,
 };
 
 
@@ -88,20 +88,6 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
-		async sendMsgSetWithdrawAddress({ value, fee, memo }: sendMsgSetWithdrawAddressParams): Promise<DeliverTxResponse> {
-			if (!signer) {
-					throw new Error('TxClient:sendMsgSetWithdrawAddress: Unable to sign Tx. Signer is not present.')
-			}
-			try {			
-				const { address } = (await signer.getAccounts())[0]; 
-				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
-				let msg = this.msgSetWithdrawAddress({ value: MsgSetWithdrawAddress.fromPartial(value) })
-				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
-			} catch (e: any) {
-				throw new Error('TxClient:sendMsgSetWithdrawAddress: Could not broadcast Tx: '+ e.message)
-			}
-		},
-		
 		async sendMsgFundCommunityPool({ value, fee, memo }: sendMsgFundCommunityPoolParams): Promise<DeliverTxResponse> {
 			if (!signer) {
 					throw new Error('TxClient:sendMsgFundCommunityPool: Unable to sign Tx. Signer is not present.')
@@ -130,20 +116,26 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 			}
 		},
 		
+		async sendMsgSetWithdrawAddress({ value, fee, memo }: sendMsgSetWithdrawAddressParams): Promise<DeliverTxResponse> {
+			if (!signer) {
+					throw new Error('TxClient:sendMsgSetWithdrawAddress: Unable to sign Tx. Signer is not present.')
+			}
+			try {			
+				const { address } = (await signer.getAccounts())[0]; 
+				const signingClient = await SigningStargateClient.connectWithSigner(addr,signer,{registry, prefix});
+				let msg = this.msgSetWithdrawAddress({ value: MsgSetWithdrawAddress.fromPartial(value) })
+				return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
+			} catch (e: any) {
+				throw new Error('TxClient:sendMsgSetWithdrawAddress: Could not broadcast Tx: '+ e.message)
+			}
+		},
+		
 		
 		msgWithdrawValidatorCommission({ value }: msgWithdrawValidatorCommissionParams): EncodeObject {
 			try {
 				return { typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission", value: MsgWithdrawValidatorCommission.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgWithdrawValidatorCommission: Could not create message: ' + e.message)
-			}
-		},
-		
-		msgSetWithdrawAddress({ value }: msgSetWithdrawAddressParams): EncodeObject {
-			try {
-				return { typeUrl: "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress", value: MsgSetWithdrawAddress.fromPartial( value ) }  
-			} catch (e: any) {
-				throw new Error('TxClient:MsgSetWithdrawAddress: Could not create message: ' + e.message)
 			}
 		},
 		
@@ -160,6 +152,14 @@ export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "ht
 				return { typeUrl: "/cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward", value: MsgWithdrawDelegatorReward.fromPartial( value ) }  
 			} catch (e: any) {
 				throw new Error('TxClient:MsgWithdrawDelegatorReward: Could not create message: ' + e.message)
+			}
+		},
+		
+		msgSetWithdrawAddress({ value }: msgSetWithdrawAddressParams): EncodeObject {
+			try {
+				return { typeUrl: "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress", value: MsgSetWithdrawAddress.fromPartial( value ) }  
+			} catch (e: any) {
+				throw new Error('TxClient:MsgSetWithdrawAddress: Could not create message: ' + e.message)
 			}
 		},
 		

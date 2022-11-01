@@ -4,6 +4,12 @@ accounts:
     coins: ["20000token", "200000000stake"]
   - name: bob
     coins: ["10000token", "100000000stake"]
+  - name: richard-one
+    address: cosmos1rcdwxwjptyftc0lxh62u3a3mzkn5vzj64k09lg
+    coins: ["10000token", "1000stake"]
+  - name: richard-two
+    address: cosmos1jk6gmmppzeu5vyg5x3nyw8zty546fy4a5qv7pq
+    coins: ["1000token", "1000stake"]
 validators:
   - name: alice
     bonded: "100000000stake"
